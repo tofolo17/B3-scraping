@@ -31,29 +31,29 @@ driver.quit()
 
 from time import sleep
 
-from Main.Classes import B3
+from Main.Classes import *
+from Main.Functions import *
 
 print("Running Testes/sel-tests")
 
 driver = B3()
 
-# url = "http://www.b3.com.br/pt_br/produtos-e-servicos/negociacao/renda-variavel/empresas-listadas.htm"
-
+url = "http://www.b3.com.br/pt_br/produtos-e-servicos/negociacao/renda-variavel/empresas-listadas.htm"
 
 driver.get(
-    "https://www.rad.cvm.gov.br/ENETCONSULTA/frmGerenciaPaginaFRE.aspx?"
-    "NumeroSequencialDocumento=104205&CodigoTipoInstituicao=2"
+    url
 )
 
+"""
 driver.c('//*[@id="cmbGrupo"]/option[12]', False)
 driver.c('//*[@id="cmbQuadro"]/option[5]', False)
 
 sleep(5)
 
 driver.close()
-driver.quit()
+driver.quit()"""
 
-"""driver.switch_to.frame(driver.find_element_by_id("bvmf_iframe"))
+driver.switch_to.frame(driver.find_element_by_id("bvmf_iframe"))
 
 sleep(5)
 
@@ -67,4 +67,4 @@ storage_empresas(driver)
 
 sleep(10)
 driver.close()
-driver.quit()"""
+driver.quit()

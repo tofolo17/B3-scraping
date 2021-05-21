@@ -57,7 +57,16 @@ for i in range(len(empresas)):
 
                     # Vai até os diretores
                     driver_filho.c('//*[@id="cmbGrupo"]/option[12]', False)
-                    driver_filho.c('//*[@id="cmbQuadro"]/option[5]', False)
+
+                    sleep(1)
+
+                    index = 0
+                    options = driver_filho.itens('cmbQuadro')
+                    for option in options.options:
+                        if "Composição e experiência" in option.text:
+                            index = options.options.index(option) + 1
+                            break
+                    driver_filho.c(f'//*[@id="cmbQuadro"]/option[{index}]', False)
 
                     # Entra no iframe dos diretores
                     url_retorno = driver_filho.execute_script(
@@ -65,8 +74,9 @@ for i in range(len(empresas)):
                     )
                     driver_filho.get(url_retorno)
 
-                    diretores_bruto = driver_filho.texts('labelOld', False)
-                    diretores_tratado = [diretores for diretores in diretores_bruto if diretores != ""]
+                    # Pega os dados dos diretores
+                    diretores_bruto = driver_filho.texts('TdTamanho300', False)
+                    diretores_tratado = [diretores for diretores in diretores_bruto[3:]]
 
                     print(empresas[i])
                     print(anos[j - 1])
