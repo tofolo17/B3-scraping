@@ -7,7 +7,7 @@ print("Running Main/main.")
 
 empresas = get_empresas()
 
-driver = B3()
+driver = B3()  # Tem que estar com o gerenciador de tarefas fechado
 
 for i in range(len(empresas)):
     url = "http://www.b3.com.br/pt_br/produtos-e-servicos/negociacao/renda-variavel/empresas-listadas.htm"
@@ -22,7 +22,7 @@ for i in range(len(empresas)):
     search_button_id = "ctl00_contentPlaceHolderConteudo_BuscaNomeEmpresa1_btnBuscar"
     driver.c(search_button_id)
 
-    print(driver.texts("GridRow_SiteBmfBovespa"), empresas[i])
+    # print(driver.texts("GridRow_SiteBmfBovespa", False), empresas[i])
 
     # Seleciona Empresa
     driver.c('//*[@id="ctl00_contentPlaceHolderConteudo_BuscaNomeEmpresa1_grdEmpresa_ctl01"]/tbody/tr/td[1]/a', False)
@@ -32,6 +32,7 @@ for i in range(len(empresas)):
 
     # Anos para análise
     items = driver.itens("ctl00_contentPlaceHolderConteudo_cmbAno")
+    anos = [item.text for item in items.options]
 
     # Acessa cada ano
     for j in range(2, len(items.options) + 1):
@@ -45,7 +46,7 @@ for i in range(len(empresas)):
             ).get_attribute("href")
         except Exception:
             formulario = None
-        print(formulario)
+        # print(formulario, len(formulario))
 
         while True:
             try:
@@ -54,11 +55,23 @@ for i in range(len(empresas)):
                     driver_filho = B3()
                     driver_filho.get(formulario.split("'")[1])
 
-                    # O que fazer dentro do Formulário de Referência
+                    # Vai até os diretores
                     driver_filho.c('//*[@id="cmbGrupo"]/option[12]', False)
                     driver_filho.c('//*[@id="cmbQuadro"]/option[5]', False)
 
-                    sleep(5)
+                    # Entra no iframe dos diretores
+                    url_retorno = driver_filho.execute_script(
+                        "return document.getElementById('iFrameFormulariosFilho').contentWindow.location.href"
+                    )
+                    driver_filho.get(url_retorno)
+
+                    diretores_bruto = driver_filho.texts('labelOld', False)
+                    diretores_tratado = [diretores for diretores in diretores_bruto if diretores != ""]
+
+                    print(empresas[i])
+                    print(anos[j - 1])
+                    for k in range(0, len(diretores_tratado), 3):
+                        print(f'{diretores_tratado[k]} || {diretores_tratado[k + 1]} || {diretores_tratado[k + 2]}')
 
                     driver_filho.close()
                     driver_filho.quit()
@@ -66,8 +79,8 @@ for i in range(len(empresas)):
                     break
 
                 break
-            except Exception:
-                pass
+            except Exception as e:
+                print(e)
     sleep(5)
 
 sleep(10)

@@ -49,12 +49,12 @@ class B3(webdriver.Chrome):
         while True:
             try:
                 if via_id:
-                    values = self.find_elements_by_class_name(field)
+                    values = self.find_elements_by_id(field)
                 else:
-                    values = self.find_element_by_id(field)
+                    values = self.find_elements_by_class_name(field)
                 if values is not None and len(values) != 0:
                     name_list = [value.text for value in values]
-                    return name_list, len(name_list)
+                    return name_list
             except Exception:
                 pass
 
