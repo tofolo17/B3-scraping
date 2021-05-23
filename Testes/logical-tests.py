@@ -9,5 +9,5 @@ diretores = ['Pedro Miguel Grijalba Vasquez', '102.994.551-90', '19 - Outros Dir
              '27 - Conselho de Adm. Independente (Efetivo)', 'Kjetil Braaten Solbrække', '060.162.017-82',
              '27 - Conselho de Adm. Independente (Efetivo)']
 
-for i in range(0, len(diretores), 3):
-    print(diretores[i], diretores[i + 1], diretores[i + 2])
+for i in range(len(diretores)):
+    print(diretores[i])

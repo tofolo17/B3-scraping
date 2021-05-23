@@ -1,3 +1,4 @@
+from math import floor
 from time import sleep
 
 from Classes import *
@@ -10,6 +11,9 @@ empresas = get_empresas()
 driver = B3()  # Tem que estar com o gerenciador de tarefas fechado
 
 for i in range(len(empresas)):
+    with open("data", "a", encoding="utf-8") as f:
+        f.write(f"{empresas[i]}\n")
+
     url = "http://www.b3.com.br/pt_br/produtos-e-servicos/negociacao/renda-variavel/empresas-listadas.htm"
     driver.get(url)
 
@@ -21,8 +25,6 @@ for i in range(len(empresas)):
 
     search_button_id = "ctl00_contentPlaceHolderConteudo_BuscaNomeEmpresa1_btnBuscar"
     driver.c(search_button_id)
-
-    # print(driver.texts("GridRow_SiteBmfBovespa", False), empresas[i])
 
     # Seleciona Empresa
     driver.c('//*[@id="ctl00_contentPlaceHolderConteudo_BuscaNomeEmpresa1_grdEmpresa_ctl01"]/tbody/tr/td[1]/a', False)
@@ -39,26 +41,25 @@ for i in range(len(empresas)):
         driver.c(f'//*[@id="ctl00_contentPlaceHolderConteudo_cmbAno"]/option[{j}]', False)
 
         # Pega o Formulário de Referência
-        sleep(5)  # Pode dar problema aqui
+        sleep(4)  # Pode dar problema aqui
         try:
             formulario = driver.find_element_by_id(
                 "ctl00_contentPlaceHolderConteudo_rptDocumentosFRE_ctl00_lnkDocumento"
             ).get_attribute("href")
         except Exception:
             formulario = None
-        # print(formulario, len(formulario))
 
         while True:
             try:
                 if formulario is not None:
+
                     # Entra com um driver filho no link do Formulário de Referência
                     driver_filho = B3()
                     driver_filho.get(formulario.split("'")[1])
 
                     # Vai até os diretores
                     driver_filho.c('//*[@id="cmbGrupo"]/option[12]', False)
-
-                    sleep(1)
+                    sleep(2)
 
                     index = 0
                     options = driver_filho.itens('cmbQuadro')
@@ -78,20 +79,57 @@ for i in range(len(empresas)):
                     diretores_bruto = driver_filho.texts('TdTamanho300', False)
                     diretores_tratado = [diretores for diretores in diretores_bruto[3:]]
 
-                    print(empresas[i])
-                    print(anos[j - 1])
-                    for k in range(0, len(diretores_tratado), 3):
-                        print(f'{diretores_tratado[k]} || {diretores_tratado[k + 1]} || {diretores_tratado[k + 2]}')
+                    info_spec = []
+                    # Informações específicas
+                    qtd_diretores = floor(len(diretores_tratado) / 3)
+                    for k in range(1, qtd_diretores + 1):
+                        print(k, qtd_diretores)
+                        while True:
+                            try:
+                                plus_element = driver_filho.find_element_by_id(f"imgSetaFiltro{k}")
+                                plus_element.click()
+
+                                sleep(0.5)
+
+                                break
+                            except Exception:
+                                pass
+
+                    for k in range(1, qtd_diretores + 2):
+                        while True:
+                            try:
+                                if k != 1:
+                                    data = driver_filho.find_element_by_xpath(
+                                        f'/html/body/form/div[3]/table/tbody/tr[{(k - 1) * 2}]/td[2]/'
+                                        f'div/div/table/tbody/tr/td[2]/table/tbody/tr[1]/td[2]/span '
+                                    )
+                                    info_spec.append(
+                                        data.text if (data.text != "" and "/" in data.text) else "Não informado."
+                                    )
+                                    break
+                                break
+                            except Exception:
+                                pass
+                    print(info_spec)
+
+                    with open("data", "a", encoding="utf-8") as f:
+                        f.write(f"{anos[j - 1]}\n")
+
+                        # Informações gerais
+                        for k in range(0, len(diretores_tratado), 3):
+                            print(k)
+                            f.write(
+                                f'{diretores_tratado[k]};'
+                                f'{diretores_tratado[k + 1] if diretores_tratado[k + 1] != "" else "Não informado."};'
+                                f'{diretores_tratado[k + 2]};'
+                                f'{info_spec[int(k / 3)]}\n'
+                            )
 
                     driver_filho.close()
                     driver_filho.quit()
-                else:
-                    break
-
                 break
             except Exception as e:
                 print(e)
-    sleep(5)
 
 sleep(10)
 driver.close()
