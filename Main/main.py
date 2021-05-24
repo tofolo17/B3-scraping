@@ -1,4 +1,3 @@
-from math import floor
 from time import sleep
 
 from Classes import *
@@ -11,9 +10,6 @@ empresas = get_empresas()
 driver = B3()  # Tem que estar com o gerenciador de tarefas fechado
 
 for i in range(len(empresas)):
-    with open("data", "a", encoding="utf-8") as f:
-        f.write(f"{empresas[i]}\n")
-
     url = "http://www.b3.com.br/pt_br/produtos-e-servicos/negociacao/renda-variavel/empresas-listadas.htm"
     driver.get(url)
 
@@ -41,7 +37,7 @@ for i in range(len(empresas)):
         driver.c(f'//*[@id="ctl00_contentPlaceHolderConteudo_cmbAno"]/option[{j}]', False)
 
         # Pega o Formulário de Referência
-        sleep(4)  # Pode dar problema aqui
+        sleep(10)  # Pode dar problema aqui
         try:
             formulario = driver.find_element_by_id(
                 "ctl00_contentPlaceHolderConteudo_rptDocumentosFRE_ctl00_lnkDocumento"
@@ -79,6 +75,7 @@ for i in range(len(empresas)):
                     diretores_bruto = driver_filho.texts('TdTamanho300', False)
                     diretores_tratado = [diretores for diretores in diretores_bruto[3:]]
 
+                    """
                     info_spec = []
                     # Informações específicas
                     qtd_diretores = floor(len(diretores_tratado) / 3)
@@ -105,24 +102,27 @@ for i in range(len(empresas)):
                                     )
                                     info_spec.append(
                                         data.text if (data.text != "" and "/" in data.text) else "Não informado."
-                                    )
+                                    )  # Idade, quando não tem "/"
                                     break
                                 break
                             except Exception:
                                 pass
                     print(info_spec)
+                    """
 
                     with open("data", "a", encoding="utf-8") as f:
-                        f.write(f"{anos[j - 1]}\n")
 
                         # Informações gerais
                         for k in range(0, len(diretores_tratado), 3):
                             print(k)
                             f.write(
-                                f'{diretores_tratado[k]};'
+                                f'{empresas[i]};'  # Empresa
+                                f'{anos[j - 1]};'  # Ano
+                                f'{diretores_tratado[k]};'  # Nome
                                 f'{diretores_tratado[k + 1] if diretores_tratado[k + 1] != "" else "Não informado."};'
-                                f'{diretores_tratado[k + 2]};'
-                                f'{info_spec[int(k / 3)]}\n'
+                                #  CPF
+                                f'{diretores_tratado[k + 2]}\n'  # Cargo eletivo ocupado
+                                # f'{info_spec[int(k / 3)]}\n'
                             )
 
                     driver_filho.close()
