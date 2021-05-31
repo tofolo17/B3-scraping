@@ -2,7 +2,7 @@
 
 ## What will you find in this repository?
 
-Web scraping script made in Selenium responsible for extracting a massive amount of data from the [B3](http://www.b3.com.br/pt_br/) website. Extracted data:
+Web scraping script made with Selenium responsible for extracting a massive amount of data from the [B3](http://www.b3.com.br/pt_br/) website. Extracted data:
 * Company names;
 * Reference Forms;
 * Name, CPF and elected position of all directors listed on the forms for each year of each company.
