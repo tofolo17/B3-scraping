@@ -16,4 +16,4 @@ Script de Web Scraping feito em Selenium responsável por extrair uma quantidade
 * Formulários de Referência;
 * Nome, CPF e cargo eletivo ocupado de todos os diretores listados nos formulários de cada ano de cada empresa.
 
-Tais dados serão fornecidos a Fundação Dom Cabral, mediante a orientação do docente [Paul Ferreira](https://www.fdc.org.br/sobreafdc/professores/paul-ferreira), para análises futuras
+Tais dados serão fornecidos a Fundação Dom Cabral, mediante a orientação do docente [Paul Ferreira](https://www.fdc.org.br/sobreafdc/professores/paul-ferreira), para análises futuras.
