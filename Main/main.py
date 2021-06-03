@@ -7,9 +7,13 @@ from selenium.webdriver.support.wait import WebDriverWait
 from Classes import *
 from Functions import *
 
+"""
+Pode ser que algumas empresas não tenham sido acessadas. Verificar posteriormente.
+"""
+
 print("Running Main/main.")
 
-empresas = get_empresas()
+empresas = get_empresas("Empresas")
 
 for i in range(len(empresas)):
     driver = B3()  # Tem que estar com o gerenciador de tarefas fechado

@@ -10,7 +10,7 @@ def storage_empresas(d):  # precisa estar no iframe
             f.write(f"{texto_interno}\n")
 
 
-def get_empresas():
-    with open("Empresas", "r", encoding="utf-8") as f:
+def get_empresas(path):
+    with open(path, "r", encoding="utf-8") as f:
         lista_empresas = [line.strip("  \n") for line in f.readlines()]
     return sorted(lista_empresas)
