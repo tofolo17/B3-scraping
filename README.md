@@ -2,7 +2,7 @@
 
 ## What will you find in this repository?
 
-Web scraping script made with Selenium responsible for extracting a massive amount of data from
+Web scraping script built with Selenium responsible for extracting a massive amount of data from
 the [B3](http://www.b3.com.br/pt_br/) website. Extracted data:
 
 * Company names;
